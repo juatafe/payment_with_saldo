@@ -1,0 +1,19 @@
+<odoo>
+    <template id="payment_checkout_template" name="Payment Checkout" inherit_id="payment.checkout">
+        <xpath expr="//form[hasclass('o_payment_form')]" position="inside">
+            <!-- Afegim l'input ocult per a payment_option_id -->
+            <input type="hidden" name="payment_option_id" t-att-value="default_payment_option_id"/>
+        </xpath>
+
+        <xpath expr="//div[contains(@class, 'o_payment_option')]" position="after">
+            <!-- Opció de pagament amb saldo -->
+            <div class="o_payment_option">
+                <label>
+                    <input type="radio" name="o_payment_radio" value="saldo"
+                           t-att-checked="'checked' if default_payment_option_id == 'saldo' else None"/>
+                    Pago con saldo
+                </label>
+            </div>
+        </xpath>
+    </template>
+</odoo>
