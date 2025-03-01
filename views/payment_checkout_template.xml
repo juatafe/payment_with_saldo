@@ -1,19 +1,51 @@
 <odoo>
     <template id="payment_checkout_template" name="Payment Checkout" inherit_id="payment.checkout">
-        <xpath expr="//form[hasclass('o_payment_form')]" position="inside">
-            <!-- Afegim l'input ocult per a payment_option_id -->
-            <input type="hidden" name="payment_option_id" t-att-value="default_payment_option_id"/>
-        </xpath>
+        <xpath expr="//form[hasclass('o_payment_form')]" position="replace">
+        <!-- 🔹 Debug: Comprovar si order.id arriba correctament -->
+            <t t-log="order.id"/>
+            <form name="o_payment_checkout" class="o_payment_form mt-3 clearfix" 
+                  action="/shop/payment/validate" method="post"
+                  t-att-data-order-id="order.id if order else ''"
+                  t-att-data-reference-prefix="reference_prefix"
+                  t-att-data-amount="amount"
+                  t-att-data-currency-id="currency and currency.id"
+                  t-att-data-partner-id="partner_id"
+                  t-att-data-access-token="access_token"
+                  t-att-data-transaction-route="transaction_route"
+                  t-att-data-landing-route="landing_route"
+                  t-att-data-allow-token-selection="True">
+                  
+                <!-- Input ocult per a passar el payment_option_id -->
+                <input type="hidden" name="payment_option_id" t-att-value="default_payment_option_id"/>
 
-        <xpath expr="//div[contains(@class, 'o_payment_option')]" position="after">
-            <!-- Opció de pagament amb saldo -->
-            <div class="o_payment_option">
-                <label>
-                    <input type="radio" name="o_payment_radio" value="saldo"
-                           t-att-checked="'checked' if default_payment_option_id == 'saldo' else None"/>
-                    Pago con saldo
-                </label>
-            </div>
+                <!-- Opcions de pagament -->
+                <div t-if="providers">
+                    <t t-foreach="providers" t-as="provider">
+                        <div class="o_payment_option">
+                            <label>
+                                <input type="radio" name="o_payment_radio" t-att-value="provider.id"
+                                       t-att-checked="'checked' if provider.id == default_payment_option_id else None"/>
+                                <t t-esc="provider.name"/>
+                            </label>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Afegim l'opció de pagament amb saldo -->
+                <div class="o_payment_option">
+                    <label>
+                        <input type="radio" name="o_payment_radio" value="saldo"
+                               t-att-checked="'checked' if default_payment_option_id == 'saldo' else None"/>
+                        Pago con saldo
+                    </label>
+                </div>
+
+                <!-- Botó de pagament -->
+                <t t-call="payment.footer">
+                    <t t-set="label">Pagar</t>
+                    <t t-set="icon_class" t-value="'fa-lock'"/>
+                </t>
+            </form>
         </xpath>
     </template>
 </odoo>
