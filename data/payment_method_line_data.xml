@@ -1,18 +1,30 @@
 <odoo>
-    <data>
+    <data noupdate="1">
 
-        <!-- ✅ Crear el método de pago "Pago con saldo" -->
-        <record id="payment_method_saldo" model="account.payment.method">
-            <field name="name">Pago con saldo</field>
-            <field name="code">saldo</field>
-            <field name="payment_type">inbound</field> <!-- inbound = pago entrante -->
+        <!-- ✅ Diari específic per saldo -->
+        <record id="journal_bancfalla" model="account.journal">
+            <field name="name">BancFalla</field>
+            <field name="code">BNF</field>
+            <field name="type">bank</field>
+            <field name="company_id" ref="base.main_company"/>
+            <field name="currency_id" ref="base.EUR"/>
         </record>
 
-        <!-- ✅ Crear la línea de método de pago con la relación correcta -->
+        <!-- 🔹 Mètode de pagament -->
+        <record id="payment_method_saldo" model="account.payment.method">
+            <field name="name">Pagament amb saldo</field>
+            <field name="code">saldo</field>
+            <field name="payment_type">inbound</field>
+        </record>
+
+        <!-- ✅ Línia de mètode de pagament -->
         <record id="payment_method_line_saldo" model="account.payment.method.line">
-            <field name="name">Pago con saldo</field>
-            <field name="payment_method_id" ref="payment_method_saldo"/>
-            <field name="provider_id" ref="payment_provider_saldo"/>  <!-- 🔹 Asegurar que esto persista -->
+            <field name="name">Pagament amb saldo</field>
+            <field name="payment_method_id" ref="payment_with_saldo.payment_method_saldo"/>
+            <field name="journal_id" ref="payment_with_saldo.journal_bancfalla"/>
+            <field name="code">saldo</field>
+            <field name="active">True</field>
+            <field name="sequence">10</field>
         </record>
 
     </data>

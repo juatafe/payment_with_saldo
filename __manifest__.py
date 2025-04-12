@@ -22,13 +22,18 @@
     'views/report_saleorder_document.xml',
     'security/ir.model.access.csv',
     ],
+    'qweb': [
+    'views/assets.xml',
+    ],
     'assets': {
         'web.assets_frontend': [
             'payment_with_saldo/static/src/js/payment_with_saldo.js',
+            'payment_with_saldo/static/src/js/payment_saldo_error.js',
             ],
         },
 
 
     'installable': True,
     'application': False,
+    'license': 'LGPL-3',
 }

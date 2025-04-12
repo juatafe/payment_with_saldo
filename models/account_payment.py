@@ -32,23 +32,18 @@ class AccountPaymentMethodSaldo(models.Model):
     def action_post(self):
         for record in self:
             if record.payment_method_type == 'saldo':
-                cliente = record.partner_id
-                if cliente.saldo < record.amount:
-                    raise exceptions.UserError(_('Saldo insuficient per a completar el pagament.'))
+                # ❌ No tornar a descomptar saldo
+                # Només ens assegurem que tot estiga ben configurat
 
-                # Descomptar el saldo
-                cliente.saldo -= record.amount
-                cliente.sudo().write({'saldo': cliente.saldo})
-
-                # Assignar el diari de pagament correctament
+                # 🧾 Assignar el diari
                 if not record.journal_id:
-                    journal_saldo = self.env['account.journal'].search([('code', '=', 'BF')], limit=1)
+                    journal_saldo = self.env['account.journal'].search([('code', '=', 'BNK1')], limit=1)
                     if journal_saldo:
                         record.journal_id = journal_saldo.id
                     else:
                         raise exceptions.UserError(_("No s'ha trobat el diari per a pagament amb saldo."))
 
-                # Assignar el mètode de pagament si no està definit
+                # 💳 Assignar el mètode de pagament si no està definit
                 if not record.payment_method_line_id:
                     payment_method = self.env['account.payment.method.line'].search(
                         [('journal_id', '=', record.journal_id.id)], limit=1
