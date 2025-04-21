@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import http, fields
 from odoo.http import request
 import logging
 import json
@@ -70,25 +70,23 @@ class PaymentWithSaldoController(http.Controller):
 
                 try:
                     with request.env.cr.savepoint():
-                        _logger.info("🔍 [SALDO] Buscant payment provider...")
-                        payment_provider = request.env['payment.provider'].sudo().search([('id', '=', 20)], limit=1)
-
-                        if not payment_provider:
-                            _logger.error("❌ [SALDO] Payment provider no trobat!")
-                            raise ValueError("Proveïdor de pagament no trobat")
+                        _logger.info("🔍 [SALDO] Buscant payment provider per ref XML...")
+                        payment_provider = request.env.ref('payment_with_saldo.payment_provider_saldo').sudo()
 
                         _logger.info("📘 [SALDO] Buscant journal amb codi BNK1")
                         journal_saldo = request.env['account.journal'].sudo().search([('code', '=', 'BNK1')], limit=1)
                         if not journal_saldo:
-                            raise ValueError("No s'ha trobat el diari de pagament correcte!")
+                            raise ValueError("No s'ha trobat el diari de pagament correcte (BNK1)!")
 
-                        _logger.info("📘 [SALDO] Buscant línia de mètode de pagament...")
+                        _logger.info("📘 [SALDO] Buscant línia de mètode de pagament per codi 'saldo' i journal 'BNK1'")
                         payment_method_line = request.env['account.payment.method.line'].sudo().search([
-                            ('provider_id', '=', payment_provider.id),
-                            ('journal_id', '=', journal_saldo.id)
+                            ('payment_method_id.code', '=', 'saldo'),
+                            ('journal_id.code', '=', 'BNK1')
                         ], limit=1)
                         if not payment_method_line:
-                            raise ValueError("No s'ha trobat cap línia de mètode de pagament vàlida!")
+                            raise ValueError("No s'ha trobat cap línia de mètode de pagament amb saldo vàlida!")
+
+                        _logger.info(f"✅ [SALDO] Línia trobada: {payment_method_line.name} ({payment_method_line.payment_method_id.name})")
 
                         _logger.info("🧾 [SALDO] Creant transacció...")
                         payment_transaction = request.env['payment.transaction'].sudo().create({
@@ -116,6 +114,21 @@ class PaymentWithSaldoController(http.Controller):
 
                         payment_transaction.sudo()._post_process_after_done()
                         _logger.info("✅ [SALDO] Post-processament de la transacció complet")
+
+                        payment_vals = {
+                            'partner_id': client.id,
+                            'amount': order.amount_total,
+                            'payment_type': 'inbound',
+                            'partner_type': 'customer',
+                            'journal_id': journal_saldo.id,
+                            'payment_method_line_id': payment_method_line.id,
+                            'ref': f"Pagament amb saldo per a comanda {order.name}",
+                            'date': fields.Date.context_today(request.env.user),
+                        }
+                        payment = request.env['account.payment'].sudo().create(payment_vals)
+                        payment.action_post()
+
+                        _logger.info(f"🧾 [SALDO] Pagament comptable creat i registrat (ID {payment.id})")
 
                         new_saldo = client.saldo_a_favor - order.amount_total
                         client.sudo().write({'saldo_a_favor': new_saldo})
