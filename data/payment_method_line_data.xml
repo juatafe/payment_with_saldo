@@ -1,0 +1,40 @@
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            ✅ Definició de la línia de mètode de pagament
+            Aquesta línia vincula el mètode de pagament "Pagament amb saldo"
+            amb un diari concret, permetent usar-lo en pagaments comptables.
+        -->
+
+        <record id="payment_method_line_saldo" model="account.payment.method.line">
+            <!-- Nom visible per identificar la línia (pot aparèixer a l'UI interna) -->
+            <field name="name">Pagament amb saldo</field>
+
+            <!-- Referència al mètode definit en payment_method_data.xml -->
+            <field name="payment_method_id" ref="payment_with_saldo.payment_method_saldo"/>
+
+            <!-- Diari associat: aquest ha d'estar definit a account_journal_data.xml -->
+            <field name="journal_id" ref="payment_with_saldo.account_journal_bancfalla"/>
+
+            <!-- Codi tècnic opcional, pot ajudar en cerques (no obligatori però útil) -->
+            <field name="code">saldo</field>
+
+            <!-- Ordre de visualització (menor = més amunt a la llista) -->
+            <field name="sequence">10</field>
+        </record>
+
+    </data>
+</odoo>
+<!--
+    Aquest fitxer defineix una línia de mètode de pagament per al mètode "Pagament amb saldo"
+    associat a un diari concret. Això permet registrar pagaments interns usant el saldo disponible.
+    La línia de mètode de pagament és essencial per integrar el mètode amb el sistema comptable d'Odoo.
+    Assegura't que el diari referenciat estigui creat i disponible abans d'importar aquest fitxer.
+    Si necessites més línies de mètode de pagament, pots duplicar aquest registre i modificar els camps
+    necessaris (com el nom, el diari, etc.).
+    Recorda que el codi tècnic (code) és opcional, però pot ser útil per a la identificació interna.
+    Si tens més preguntes o necessites ajuda addicional, no dubtis a preguntar.
+    Gràcies per utilitzar Odoo i el mòdul de pagament amb saldo!
+    ✅ Fi del fitxer XML
+-->
