@@ -4,6 +4,14 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
+class PaymentProviderCodePatch(models.Model):
+    _inherit = 'payment.provider'
+
+    code = fields.Selection(
+        selection_add=[('custom', 'Pago con saldo')],
+        ondelete={'custom': 'set default'}
+    )
+
 class PaymentProviderSaldo(models.Model):
     _inherit = 'payment.provider'
 
@@ -11,11 +19,6 @@ class PaymentProviderSaldo(models.Model):
         [('saldo', 'Pago con saldo')],
         string="Tipo de Pago con Saldo",
         default='saldo'
-    )
-
-    code = fields.Selection(
-        selection_add=[('custom', 'Saldo Personalitzat')],
-        ondelete={'custom': 'set default'}
     )
 
     def process_saldo_payment(self, partner_id, amount, order_id):
