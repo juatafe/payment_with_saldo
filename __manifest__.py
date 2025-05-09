@@ -12,10 +12,11 @@
     'views/payment_success.xml',
     'views/payment_templates.xml',
     'views/payment_checkout_template.xml',
+    'data/account_journal_data.xml',
     'data/payment_provider.xml',
     'data/payment_method_data.xml',  # 🔹 Afegit nou
     'data/payment_method_line_data.xml',  # 🔹 Afegit nou
-    'data/account_journal_data.xml',
+    
     'security/sale_order_security.xml',
     'views/sale_order_view.xml',
     'views/qr_templates.xml',

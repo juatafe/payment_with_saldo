@@ -13,6 +13,11 @@ class PaymentProviderSaldo(models.Model):
         default='saldo'
     )
 
+    code = fields.Selection(
+        selection_add=[('custom', 'Saldo Personalitzat')],
+        ondelete={'custom': 'set default'}
+    )
+
     def process_saldo_payment(self, partner_id, amount, order_id):
         partner = self.env['res.partner'].browse(partner_id)
 
