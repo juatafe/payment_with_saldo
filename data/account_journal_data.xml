@@ -7,7 +7,7 @@
             i s'associa a la línia de mètode de pagament "Pagament amb saldo".
         -->
 
-        <record id="account_journal_bancfalla" model="account.journal">
+        <record id="account_journal_bancfalla" model="account.journal" forcecreate="1">
             <!-- Nom del diari que apareixerà a la interfície d'usuari -->
             <field name="name">BancFalla</field>
 
