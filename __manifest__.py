@@ -4,8 +4,9 @@
     'category': 'Accounting',
     'summary': 'Method of payment that checks client saldo before payment',
     'description': 'Adds a payment method that only processes the payment if the client has enough saldo.',
-    'depends': ['payment', 'account', 'saldo_favor', 'familia'],
-    #'post_init_hook': 'post_init_hook',
+    'depends': ['payment', 'account', 'saldo_favor', 'familia', 'point_of_sale'],
+    'post_init_hook': 'post_init_hook',
+
     'data': [
     'data/account_journal_data.xml',
     'views/account_payment_view.xml',
@@ -21,6 +22,8 @@
     'views/sale_order_view.xml',
     'views/qr_templates.xml',
     'views/report_saleorder_document.xml',
+    'data/pos_payment_method.xml',
+    'data/default_pos_config_payment_method.xml',
     'security/ir.model.access.csv',
     ],
     'qweb': [

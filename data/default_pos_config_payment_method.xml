@@ -1,0 +1,13 @@
+<odoo>
+    <record id="pos_config_with_saldo" model="pos.config">
+        <field name="name">TPV amb saldo</field>
+        <field name="journal_id" ref="payment_with_saldo.account_journal_bancfalla"/>
+        <field name="payment_method_ids" eval="[(4, ref('payment_with_saldo.pos_payment_method_saldo'))]"/>
+        <field name="module_pos_restaurant" eval="False"/>
+        <field name="module_pos_hr" eval="False"/>
+        <!-- Els següents camps es comenten perquè poden no existir si POS no està complet -->
+        <!-- <field name="iface_cashdrawer" eval="False"/> -->
+        <!-- <field name="iface_payment_terminal" eval="False"/> -->
+        <!-- <field name="iface_print_via_proxy" eval="False"/> -->
+    </record>
+</odoo>
