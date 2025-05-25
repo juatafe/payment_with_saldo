@@ -5,7 +5,6 @@
     'summary': 'Method of payment that checks client saldo before payment',
     'description': 'Adds a payment method that only processes the payment if the client has enough saldo.',
     'depends': ['payment', 'account', 'saldo_favor', 'familia', 'point_of_sale','l10n_es'],
-    'post_load_hook': 'post_load_hook',
 
 'data': [
     'data/account_journal_data.xml',                      # defineix el diari -> PRIMER
@@ -42,4 +41,7 @@
     'installable': True,
     'application': False,
     'license': 'LGPL-3',
+    'post_load': 'post_load_hook',
+    'pre_init_hook': None,
+    'post_init_hook': None,
 }
