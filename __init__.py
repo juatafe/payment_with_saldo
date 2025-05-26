@@ -1,6 +1,6 @@
 from . import models
 from . import controllers
-import hooks  # Això és correcte
+from . import hooks  # Això és correcte
 
 def post_load_hook(cr, registry):
     from .hooks import archive_default_shop

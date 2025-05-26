@@ -41,7 +41,7 @@
     'installable': True,
     'application': False,
     'license': 'LGPL-3',
-    'post_load': 'post_load_hook',
+    #'post_load': 'post_load_hook',
     'pre_init_hook': None,
     'post_init_hook': None,
 }
